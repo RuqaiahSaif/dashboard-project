@@ -41,22 +41,31 @@
                             <div class="myskill">
                                 <p>skils</p>
 
-                                <h4>HTML</h4>
-                                <div class="progress">
-                                    <div class="progress__bar" style="width:80%"></div>
-                                </div>
+                                <% if(skills.length){ %>
+                                    <% for(let item=0; item< skills.length; item++){ %>
+
+                                        <div>
+                                            <h4>
+                                                <%= skills[item].title %>
+                                            </h4>
+                                            <div class="progress">
+                                                <div class="progress__bar"
+                                                    style="width:<%= skills[item].progress_percent %>%"></div>
+                                            </div>
+                                        </div>
+                                        <%} } else{ %>
 
 
-                                <h4>CSS</h4>
-                                <div class="progress">
-                                    <div class="progress__bar" style="width:80%"></div>
-                                </div>
+                                            No skills
 
 
-                                <h4>JS</h4>
+                                            <%}%>
+
+
+                                                <!-- <h4>JS</h4>
                                 <div class="progress">
                                     <div class="progress__bar" style="width:60%"></div>
-                                </div>
+                                </div> -->
                             </div>
                         </div>
                         <div class="col-2">
@@ -64,10 +73,18 @@
                                 <div class="myskill">
                                     <p>Experinces</p>
                                     <div class="ex">
-                                        <div><i class="fas fa-caret-right"></i>I work as Freelancer</div>
-                                        <div><i class="fas fa-caret-right"></i>I work as Web Devloper </div>
-                                        <div><i class="fas fa-caret-right"></i>I work as App Devloper</div>
+                                        <% if(data.length){ for(var i=0; i< data.length; i++) {%>
+                                            <div><i class="fas fa-caret-right"></i>
+                                                <%= experiencedata=data[i].experience%><span>for<%= data[i].year%>
+                                                    </span>
+                                            </div>
+                                            <!-- <div><i class="fas fa-caret-right"></i>I work as Web Devloper </div>
+                                        <div><i class="fas fa-caret-right"></i>I work as App Devloper</div> -->
+                                            <% } }else{ %>
 
+                                                No expirince
+
+                                                <% } %>
                                     </div>
 
                                 </div>
@@ -86,12 +103,21 @@
                     <div class="services-content">
 
                         <div class="d1">
+                            <% if(servicesdata.length){ for(var i=0; i< servicesdata.length; i++) {%>
+                                <!-- <i class="fab fa-android"></i> -->
+                                <i class="<%= servicesdata[i].ser_icon%>"></i>
+                                <!-- <h1>App Devloper </h1> -->
+                                <h1>
+                                    <%= servicesdata[i].ser_name%>
+                                </h1>
+                                <% } }else{ %>
 
-                            <i class="fab fa-android"></i>
-                            <h1>App Devloper </h1>
+                                    No services
 
+                                    <% } %>
                         </div>
-                        <div class="d1">
+
+                        <!-- <div class="d1">
 
                             <i class="fas fa-laptop-code"></i>
 
@@ -103,7 +129,7 @@
 
                             <h1>Web Design</h1>
 
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </section>
@@ -166,12 +192,19 @@
             <div class="continer">
 
                 <div class="social">
-                    <!-- Add font awesome icons -->
-                    <i class="fab fa-facebook-f"></i>
-                    <i class="fab fa-twitter"></i>
-                    <!-- <a href="#" class="fa fa-google"></a> -->
+                    <% if(socialdata.length){ for(var i=0; i< socialdata.length; i++) {%>
+                        <!-- Add font awesome icons -->
+                        <!-- <i class="fab fa-facebook-f"></i> -->
+                        <i class="<%= socialdata[i].icon%>"></i>
+                        <!--                    
                     <i class="fab fa-linkedin-in"></i>
-                    <i class="fab fa-github"></i>
+                    <i class="fab fa-github"></i> -->
+                        <!-- <a href="#" class="fa fa-google"></a> -->
+                        <% } }else{ %>
+
+                            No social
+
+                            <% } %>
                 </div>
             </div>
 

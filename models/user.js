@@ -1,16 +1,7 @@
-const mongoose = require('mongoose');
+const database = require('../connect/connection');
 
-const DB = 'mongodb://127.0.0.1:27017/protfiliodb';
 
-mongoose
-  .connect(DB, {
-    autoIndex: true,
-  })
-  .then(() => {
-    console.log('DB connected :)');
-  });
-
-const fileSchema = new mongoose.Schema({
+const ufileSchema = new database.Schema({
   createdAt: {
     type: Date,
     default: Date.now,
@@ -50,6 +41,6 @@ const fileSchema = new mongoose.Schema({
   // },
 });
 
-const User = mongoose.model('User', fileSchema);
+const User = database.model('User', ufileSchema);
 
 module.exports = User;

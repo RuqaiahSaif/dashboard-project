@@ -7,12 +7,13 @@ var fs = require('fs');
 const User = require('./../models/user');
 const Skills = require('./../models/dash-skills');
 var experienceModel = require('../models/Experince');
-var qualificationsModel=require('../models/eduction');
+var qualificationsModel = require('../models/eduction');
+var servicesModel = require('../models/services');
 var socialModel = require('../models/social');
 // ===multer file==//
 require('dotenv/config');
 const storage = multer.diskStorage({
- 
+
 
 });
 
@@ -24,10 +25,19 @@ const upload = multer({
 const router = Router();
 
 /* GET index page. */
-router.get('/', function(req, res, next) {
-  res.render('pages/index',{title:'home'});
+router.get('/', function (req, res, next) {
+  res.render('pages/index');
 });
-
+// اضافة لصفحة البورتفوليو
+router.get('/index',async(req,res)=>{
+  // var qualifications = await qualificationsModel.find();
+  var skill_i = await Skills.find();
+  var experience_i = await experienceModel.find();
+  var social_i = await socialModel.find();
+  var services_i = await servicesModel.find();
+  // console.log(skill);
+  res.render('pages/index', { skills: skill_i, data: experience_i, socialdata: social_i, servicesdata: services_i})
+});
 // router.get('/', (req, res, next) => {
 //   User.find().then((result) => {
 //     res.render('pages/index', { data: result })
@@ -45,17 +55,23 @@ router.get('/', function(req, res, next) {
 //   res.render('pages/dash-social');
 // });
 // Eduction page
- 
-router.get('/dash-Edu', function(req, res, next) {
-  qualificationsModel.find().then((result)=>{
-  
-    res.render('pages/dash-Eduction', { qualifications:result });
+
+router.get('/dash-Edu', function (req, res, next) {
+  qualificationsModel.find().then((result) => {
+
+    res.render('pages/dash-Eduction', { qualifications: result });
   })
-  });
+});
 // GET Expirence 
-router.get('/dash-Experince', (req, res, next)=>{
-  experienceModel.find().then((result) =>{
-    res.render('pages/dash-Experince', { data: result})
+router.get('/dash-Experince', (req, res, next) => {
+  experienceModel.find().then((result) => {
+    res.render('pages/dash-Experince', { data: result })
+  })
+})
+// GET services 
+router.get('/dash-services', (req, res, next) => {
+  servicesModel.find().then((result) => {
+    res.render('pages/dash-services', { ser_data: result })
   })
 })
 // GET social 
@@ -66,31 +82,31 @@ router.get('/dash-social', (req, res, next) => {
 })
 // 
 // Skills page
-router.get('/dash-Skill', function(req, res, next) {
-  Skills.find().then((result)=>{
-    res.render('pages/dash-skills', { skills:result});
-  console.log(result);
+router.get('/dash-Skill', function (req, res, next) {
+  Skills.find().then((result) => {
+    res.render('pages/dash-skills', { skills: result });
+    console.log(result);
   })
-  });
+});
 // user operation
 const userFilesHandler = upload.fields([
 ]);
 //find
-router.get('/dashboard', (req, res, next)=>{
-  User.find().then((result) =>{
-    res.render('pages/dashboard', { data: result})
+router.get('/dashboard', (req, res, next) => {
+  User.find().then((result) => {
+    res.render('pages/dashboard', { data: result })
   })
 })
 // add user
 router.post('/user-info', userFilesHandler, async (req, res) => {
   try {
-    const { username,phone,email,Address } = req.body;
+    const { username, phone, email, Address } = req.body;
     await User.insertMany({
       username,
       phone,
       Address,
       email,
-     
+
     });
     res.redirect('/dashboard');
   } catch (err) {
@@ -100,17 +116,17 @@ router.post('/user-info', userFilesHandler, async (req, res) => {
 });
 //Edit  user on the view in the data tables section
 
-router.post('/edit_User', function(req, res, next){
+router.post('/edit_User', function (req, res, next) {
   console.log(req.body.username);
   var item = {
     username: req.body.username,
     phone: req.body.phone,
-    Address:req.body.Address,
-    email:req.body.email,
+    Address: req.body.Address,
+    email: req.body.email,
   };
   var id = req.body.id;
-  User.updateMany({"_id": id}, {$set: item}, item, function(err, result){
-   
+  User.updateMany({ "_id": id }, { $set: item }, item, function (err, result) {
+
     console.log("item updated");
     console.log(item);
   })
@@ -119,8 +135,8 @@ router.post('/edit_User', function(req, res, next){
 
 //Delete user item
 
-router.get('/delete_user/:id',function(req,res,next){
-  User.deleteOne({"_id":req.params.id},function(err,result){
+router.get('/delete_user/:id', function (req, res, next) {
+  User.deleteOne({ "_id": req.params.id }, function (err, result) {
     console.log("item deleted");
   })
   res.redirect('/dashboard');
@@ -128,31 +144,31 @@ router.get('/delete_user/:id',function(req,res,next){
 });
 
 //Add new skill to the view in the data tables section
-router.post('/addskills', function(req, res, next) {
-     
+router.post('/addskills', function (req, res, next) {
+
   var skillDetails = new Skills({
     title: req.body.title,
     progress_percent: req.body.progress_percent,
-   
+
   });
-   
+
   skillDetails.save();
-        
-console.log("skill was add")
-res.redirect('/dash-Skill');
+
+  console.log("skill was add")
+  res.redirect('/dash-Skill');
 
 });
 // Edit Skills
-router.post('/Edit_skills', function(req, res, next){
-  
+router.post('/Edit_skills', function (req, res, next) {
+
   var item = {
     title: req.body.title,
     progress_percent: req.body.progress_percent,
-   
+
   };
   var id = req.body.id;
-  Skills.updateMany({"_id": id}, {$set: item}, item, function(err, result){
-   
+  Skills.updateMany({ "_id": id }, { $set: item }, item, function (err, result) {
+
     console.log("item updated");
     console.log(item);
   })
@@ -160,8 +176,8 @@ router.post('/Edit_skills', function(req, res, next){
 });
 //Delete skill item
 
-router.get('/delete_skill/:id',function(req,res,next){
-  Skills.deleteOne({"_id":req.params.id},function(err,result){
+router.get('/delete_skill/:id', function (req, res, next) {
+  Skills.deleteOne({ "_id": req.params.id }, function (err, result) {
     console.log("item deleted");
   })
   res.redirect('/dash-Skill');
@@ -170,37 +186,37 @@ router.get('/delete_skill/:id',function(req,res,next){
 
 //Add new expirince to the view in the data tables section
 
-router.post('/add_experience', function(req, res, next) {
-     
+router.post('/add_experience', function (req, res, next) {
+
   var experienceDetails = new experienceModel({
     experience: req.body.experience,
     year: req.body.year,
     company_name: req.body.company_name,
     Description: req.body.Description,
-        Start_Date: req.body.Start_Date,
-        End_Date: req.body.End_Date,
+    Start_Date: req.body.Start_Date,
+    End_Date: req.body.End_Date,
   });
-   
-  experienceDetails .save();
-        
 
-    res.redirect('/dash-Experince');
+  experienceDetails.save();
+
+
+  res.redirect('/dash-Experince');
 
 });
 // Edit expirince
 //Edit  experience on the view in the data tables section
 
-router.post('/edit_experience', function(req, res, next){
+router.post('/edit_experience', function (req, res, next) {
   var item = {
     experience: req.body.experience,
     year: req.body.year,
-    company_name:req.body.company_name,
+    company_name: req.body.company_name,
     Description: req.body.Description,
     Start_Date: req.body.Start_Date,
     End_Date: req.body.End_Date
   };
   var id = req.body.id;
-  experienceModel.updateOne({"_id": id}, {$set: item}, item, function(err, result){
+  experienceModel.updateOne({ "_id": id }, { $set: item }, item, function (err, result) {
     assert.equal(null, err);
     console.log("item updated");
   })
@@ -209,11 +225,54 @@ router.post('/edit_experience', function(req, res, next){
 
 //Delete experience item
 
-router.get('/delete_experience/:id',function(req,res,next){
-  experienceModel.deleteOne({"_id":req.params.id},function(err,result){
+router.get('/delete_experience/:id', function (req, res, next) {
+  experienceModel.deleteOne({ "_id": req.params.id }, function (err, result) {
     console.log("item deleted");
   })
-res.redirect('/dash-Experince');
+  res.redirect('/dash-Experince');
+
+});
+/////services
+//Add new services to the view in the data tables section
+
+router.post('/add_services', function (req, res, next) {
+
+  var services = new servicesModel({
+    ser_name: req.body.ser_name,
+    ser_icon: req.body.ser_icon,
+  
+  });
+
+  services.save();
+
+
+  res.redirect('/dash-services');
+
+});
+// Edit services
+//Edit  services on the view in the data tables section
+
+router.post('/edit_services', function (req, res, next) {
+  var item = {
+    ser_name: req.body.ser_name,
+    ser_icon: req.body.ser_icon,
+
+  };
+  var id = req.body.id;
+  servicesModel.updateOne({ "_id": id }, { $set: item }, item, function (err, result) {
+    assert.equal(null, err);
+    console.log("item updated");
+  })
+  res.redirect('/dash-services');
+});
+
+//Delete services item
+
+router.get('/delete_services/:id', function (req, res, next) {
+  servicesModel.deleteOne({ "_id": req.params.id }, function (err, result) {
+    console.log("item deleted");
+  })
+  res.redirect('/dash-services');
 
 });
 
@@ -226,7 +285,7 @@ router.post('/add_social', function (req, res, next) {
     name: req.body.name,
     icon: req.body.icon,
     link: req.body.link,
- 
+
   });
 
   socials.save();
@@ -243,7 +302,7 @@ router.post('/edit_social', function (req, res, next) {
     name: req.body.name,
     icon: req.body.icon,
     link: req.body.link,
-    
+
   };
   var id = req.body.id;
   socialModel.updateOne({ "_id": id }, { $set: item }, item, function (err, result) {
@@ -264,31 +323,31 @@ router.get('/delete_social/:id', function (req, res, next) {
 });
 
 //Add new qualificationl to the view in the data tables section
-router.post('/add_qualification', function(req, res, next) {
-     
+router.post('/add_qualification', function (req, res, next) {
+
   var qualificationDetails = new qualificationsModel({
     qualification: req.body.qualification,
     date: req.body.date,
     university: req.body.university,
   });
-   
-  qualificationDetails.save();
-        
 
-    res.redirect('/dash-Edu');
+  qualificationDetails.save();
+
+
+  res.redirect('/dash-Edu');
 
 });
 
 // Edit qualification on the view in the data tables section
 
-router.post('/edit_qualification', function(req, res, next){
+router.post('/edit_qualification', function (req, res, next) {
   var item = {
     qualification: req.body.qualification,
     date: req.body.date,
-    university:req.body.university
+    university: req.body.university
   };
   var id = req.body.id;
-  qualificationsModel.updateOne({"_id": id}, {$set: item}, item, function(err, result){
+  qualificationsModel.updateOne({ "_id": id }, { $set: item }, item, function (err, result) {
     assert.equal(null, err);
     console.log("item updated");
   })
@@ -297,14 +356,14 @@ router.post('/edit_qualification', function(req, res, next){
 
 //Delete qualification item
 
-router.get('/delete_qualification/:id',function(req,res,next){
-  qualificationsModel.deleteOne({"_id":req.params.id},function(err,result){
+router.get('/delete_qualification/:id', function (req, res, next) {
+  qualificationsModel.deleteOne({ "_id": req.params.id }, function (err, result) {
     console.log("item deleted");
   })
-res.redirect('/dash-Edu');
+  res.redirect('/dash-Edu');
 
 });
- 
+
 
 
 module.exports = router;

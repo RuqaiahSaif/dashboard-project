@@ -1,19 +1,7 @@
-const mongoose = require('mongoose');
+const database = require('../connect/connection');
 
-const DB = 'mongodb://127.0.0.1:27017/protfiliodb';
-
-mongoose
-  .connect(DB, {
-    autoIndex: true,
-  })
-  .then(() => {
-    console.log('DB connected :)');
-  });
-
-
-const Sechema =mongoose.Schema; 
 // create an schema
-var experienceSchema = new Sechema({
+var experienceSchema = new database.Schema({
     experience: {
                 type:String,
                 required:true
@@ -22,27 +10,7 @@ var experienceSchema = new Sechema({
                 type:Number,
                 required:true,
             },
-            // company_name:{
-            //     type:String,
-            //     required:true,
-            // },
-            // Description: {
-            //       type: String,
-            //       required: true,
-                  
-            //     },
-            //     Start_Date: {
-            //       type: Date,
-            //       required: true,
-                 
-                  
-            //     },
-            //     End_Date: {
-            //       type: Date,
-            //       required: true,
-                 
-                  
-            //     },
+         
               
             createdAt: {
                   type: Date,
@@ -54,7 +22,7 @@ var experienceSchema = new Sechema({
             
         });
  
-var experienceModel=mongoose.model('experience',experienceSchema);
+var experienceModel = database.model('experience',experienceSchema);
  
 module.exports = experienceModel;
 

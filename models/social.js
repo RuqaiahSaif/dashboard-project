@@ -1,19 +1,7 @@
-const mongoose = require('mongoose');
+const database = require('../connect/connection');
 
-const DB = 'mongodb://127.0.0.1:27017/protfiliodb';
-
-mongoose
-    .connect(DB, {
-        autoIndex: true,
-    })
-    .then(() => {
-        console.log('DB connected :)');
-    });
-
-
-const Sechema = mongoose.Schema;
 // create an schema
-var socialSchema = new Sechema({
+var socialSchema = new database.Schema({
     name: {
         type: String,
         required: true
@@ -55,7 +43,7 @@ var socialSchema = new Sechema({
 
 });
 
-var socialModel = mongoose.model('social', socialSchema);
+var socialModel = database.model('social', socialSchema);
 
 module.exports = socialModel;
 
